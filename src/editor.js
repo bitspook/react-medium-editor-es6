@@ -30,9 +30,12 @@ export default class MediumEditor extends Component {
 
         this.medium = new _MediumEditor(dom, this.props.options);
         this.medium.subscribe('editableInput', () => {
-            this._updated = true;
             this.props.onChange(dom.innerHTML);
         });
+    };
+
+    componentDidUpdate = () => {
+        this.medium.restoreSelection();
     };
 
     componentWillUnmount = () => {
@@ -48,6 +51,10 @@ export default class MediumEditor extends Component {
             contentEditable: true,
             dangerouslySetInnerHTML: {__html: this.props.text},
         };
+
+        if (this.medium) {
+            this.medium.saveSelection();
+        }
 
         return React.createElement(tag, props);
     }

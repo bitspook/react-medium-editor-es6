@@ -17,6 +17,7 @@ export default class MediumEditor extends Component {
         text: PropTypes.string,
         options: PropTypes.any,
         onChange: PropTypes.func,
+        flushEditorDOM: PropTypes.bool,
     };
 
     static defaultProps = {
@@ -32,6 +33,7 @@ export default class MediumEditor extends Component {
         this.medium.subscribe('editableInput', () => {
             this.props.onChange(dom.innerHTML);
         });
+        this.medium.setContent(this.props.text);
     };
 
     componentDidUpdate = () => {
@@ -44,13 +46,16 @@ export default class MediumEditor extends Component {
 
     render() {
         const tag = this.props.tag;
-        let props = blacklist(this.props, 'tag', 'contentEditable', 'dangerouslySetInnerHTML');
+        let props = blacklist(this.props, 'tag', 'contentEditable');
 
         props = {
             ...props,
             contentEditable: true,
-            dangerouslySetInnerHTML: {__html: this.props.text},
         };
+
+        if (this.props.flushEditorDOM) {
+            this.medium && this.medium.setContent(this.props.text);
+        }
 
         if (this.medium) {
             this.medium.saveSelection();

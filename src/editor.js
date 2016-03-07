@@ -1,4 +1,3 @@
-import blacklist from 'blacklist';
 import React, {
     Component,
     PropTypes,
@@ -46,21 +45,18 @@ export default class MediumEditor extends Component {
 
     render() {
         const tag = this.props.tag;
-        let props = blacklist(this.props, 'tag', 'contentEditable');
-
-        props = {
-            ...props,
-            contentEditable: true,
+        const childProps = {
+            ...this.props,
         };
-
-        if (this.props.flushEditorDOM) {
-            this.medium && this.medium.setContent(this.props.text);
-        }
 
         if (this.medium) {
             this.medium.saveSelection();
+
+            if (this.props.flushEditorDOM) {
+                this.medium.setContent(this.props.text);
+            }
         }
 
-        return React.createElement(tag, props);
+        return React.createElement(tag, childProps);
     }
 }
